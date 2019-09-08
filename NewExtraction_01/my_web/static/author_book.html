@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>{{ name }}</h1>
+    <hr/>
+    <form method="post">
+        {{ form.csrf_token }}
+
+        {{ form.author_name.label }}
+        <p>{{form.author_name}}</p>
+        {% for msg in form.author_name.errors %}
+            <p>{{msg}}</p>
+        {% endfor %}
+
+        {{ form.book_name.label }}
+        <p>{{form.book_name}}</p>
+        {% for msg in form.book_name.errors %}
+            <p>{{msg}}</p>
+        {% endfor %}
+
+        {{ form.submit }}
+    </form>
+    <hr/>
+    <ul>
+        {% for author in authors %}
+        <li>作者：{{ author.name }}</li>
+            <ul>
+                {% for book in author.books%}
+               <li>书籍：{{ book.name }}</li>
+                <!--<a href="javascript:;" book-id="{{book.id}}">删除</a>-->
+                <a href="/delete_book?book_id={{book.id}}">GET删除</a>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+    </ul>
+    <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+    <script>
+         //当点击时候由以下代码实现对后端某视图发送请求
+//        $("a").click(
+//            function () {
+//                var data = {
+//                    book_id: $(this).attr("book-id")
+//                };
+//                // 将js中的对象转换为 json字符串
+//                var req_json = JSON.stringify(data);
+//    //            $.post("/delete_book", req_json, function (resp) {
+//    //                if (resp.code == 0) {
+//    //                    location.href = "/";
+//    //                }
+//    //            })
+//                $.ajax({
+//                    url: "/delete_book", // 请求的后端url
+//                    type: "post",  // 请求方式
+//                    data: req_json,  // 向后端发送的请求体数据，经过js中的对象转换为 json字符串
+//                    contentType: "application/json", // 指明向后端发送的数据格式
+//                    dataType: "json",  // 指明后端返回的数据格式
+//                    success: function (resp) {
+//                        if (resp.code == 0) {
+//                            alert("oK");
+//                            location.href = "/";
+//                        }
+//                    }
+//                })
+//            }
+//        )
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+

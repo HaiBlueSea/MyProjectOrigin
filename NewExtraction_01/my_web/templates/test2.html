@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>新闻言论提取</title>
+	<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="static/css/index.css">
+	<script type="text/javascript">
+		$(function(){
+			alert("1111");
+			$("input").eq(2).click(function(){
+				var data = $("textarea").val();
+				var req_json = JSON.stringify(data);
+				alert(req_json);
+				$.ajax({
+					url:'/solve',
+					type:'post',
+					data: data,
+					contentType: "application/json",
+					dataType:'json',
+				})
+				.done(function(dat){
+					if (dat.code == 1){
+						alert("ok");
+						}
+				})
+
+			})
+		})
+	</script>
+
+</style>
+</head>
+<body>
+	<div class="navbar navbar-default navbar-static-top navbar-fixed-top">
+		<div class="container">
+			<!-- 导航条头部元素 -->
+			<div class="navbar-header">
+				<button class="navbar-toggle" data-toggle="collapse" data-target="#my_menu">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a href="#" class="navbar-brand">新闻言论自动提取</a>
+			</div>
+
+			<div class="collapse navbar-collapse" id="my_menu">
+
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="">联系我们</a></li>
+					<li><a href="">注册</a></li>
+					<li><a href="">登录</a></li>
+				</ul>
+
+			</div>
+
+		</div>
+	</div>
+
+	<div class="container">
+		<div class="col-lg-6  col-md-6 ">
+		</div>
+		<div class="col-lg-6  col-md-6 ">
+		</div>
+	</div>
+
+	<br>
+	<br>
+	<br>
+
+	<div class="container" >
+		<div class="jumbotron">
+			<div class="row">
+				<div>
+					<textarea  name="input_text" class="my-input"  placeholder="请输入你要处理的内容" rows="10" style="resize: none;overflow: auto; background-color: #eee;"></textarea>
+				</div>
+
+				<div class="container" >
+					<div class="row">
+						<div class="col-lg-6">
+							<div >
+								<input type="file" name="">
+								<!-- <input type="image" src="images/goods.jpg" name=""> -->
+							</div>
+						</div>
+
+						<div class="col-lg-6">
+							<div style="text-align:right;">
+								<!-- <input type="image" src="images/goods.jpg" name=""> -->
+								<input class="my-buttton" type="reset" name="" value="清空">
+								<input class="my-buttton" type="submit" name="" value="提取">
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+<!-- 			<div class="row">
+				<div class="col-lg-2 col-lg-offset-10" style="padding-right:0">
+					<a href="#" class="btn btn-danger" style="float: right;">提取言论</a>
+				</div>
+			</div> -->
+		</div>
+	</div>
+
+
+	<div class="container" >
+		<table class="table">
+			<thead>
+				<tr>
+					<th  style=" white-space:nowrap">人物</th>
+					<th>言论</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<th scope="row">小明</th>
+					<td>Mark</td>
+				</tr>
+				<tr>
+					<th scope="row">小花</th>
+					<td>Jacob
+						打折打得阿迪阿迪啊大大大的打的打折打得阿迪阿迪啊大大大的打的打折打得阿迪阿迪啊大大大的打的打折打得阿迪阿迪啊大大大的打的打折打得阿迪阿迪啊大大大的打的打折打得阿迪阿迪啊大大大的打的打折打得阿迪阿迪啊大大大的打的打折打得阿迪阿迪啊大大大的打的打折打得阿迪阿迪
+					</td>
+
+				</tr>
+				<tr>
+					<th scope="row">小牛</th>
+					<td>Larry</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+</body>
+</html>

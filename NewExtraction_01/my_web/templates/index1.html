@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>新闻言论提取</title>
+	<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+	<link rel="stylesheet" type="text/css" href="static/css/index.css">
+	<style type="text/css">
+		.link {
+		fill: none;
+		stroke: #666;
+		stroke-width: 1.8px;   
+		}
+
+		#licensing {
+		fill: green;
+		}
+
+		.link.licensing {
+		stroke: green;
+		}
+
+		.link.resolved {
+		stroke-dasharray: 0,2 1;
+		}
+
+		circle {
+		fill: #fff;
+		stroke: #333;
+		stroke-width: 1px;
+		}
+
+		text {
+		font: 15px sans-serif;
+		pointer-events: none;
+		text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+		}
+
+	</style>
+	<script type="text/javascript">
+		$(function(){
+			// alert("1111");
+			$("input").eq(2).click(function(){
+				var data = $("textarea").val();
+				var req_json = JSON.stringify(data);
+				var links = [];
+				$.ajax({
+					url:'/solve',
+					type:'post',
+					data: data,
+					contentType: "application/json",
+					dataType:'json',
+				})
+				.done(function(dat){
+					var sSaying = "";
+					for(name in dat){
+						var temp_dict = {source: dat[name][0],target: dat[name][1],type:"suit"};
+						links.push(temp_dict);
+						sSaying += "<tr><th scope=\"row\">"+dat[name][0]+":"+"</th><td>";
+						sSaying += dat[name][1];
+						sSaying += "</td></tr>";
+					}
+					$("thead").css("display","table-row-group");
+					$("tbody").html(sSaying);
+
+					if(d3.select('svg').length > 0){d3.select('svg').remove()};
+					// alert(links)
+					Graphshow(links);
+				})
+
+			})
+
+			$("input").eq(1).click(function(){
+				$("textarea").val('');
+
+			})
+
+			function Graphshow(links)
+				{
+				   //resolved: dot line //licensing : green //suit :black
+
+					var nodes = {};
+
+					// Compute the distinct nodes from the links.
+					links.forEach(function(link) {
+						link.source = nodes[link.source] || (nodes[link.source] = {name: link.source});
+						link.target = nodes[link.target] || (nodes[link.target] = {name: link.target});
+					});
+
+					var width = 1120,
+					height = 500;
+
+					var force = d3.layout.force()
+					.nodes(d3.values(nodes))
+					.links(links)
+					.size([width, height])
+					.linkDistance(100)
+					.charge(-500)
+					.on("tick", tick)
+					.start();
+
+					var svg = d3.select("#my-graph").append("svg")
+					.attr("width", width)
+					.attr("height", height);
+
+					// Per-type markers, as they don't inherit styles.
+					svg.append("defs").selectAll("marker")
+					.data(["suit", "licensing", "resolved"])
+					.enter().append("marker")
+					.attr("id", function(d) { return d; })
+					.attr("viewBox", "0 -5 10 10")
+					.attr("refX", 15)
+					.attr("refY", -1.5)
+					.attr("markerWidth", 6)
+					.attr("markerHeight", 6)
+					.attr("orient", "auto")
+					.append("path")
+					.attr("d", "M0,-5L10,0L0,5");
+
+					var path = svg.append("g").selectAll("path")
+					.data(force.links())
+					.enter().append("path")
+					.attr("class", function(d) { return "link " + d.type; })
+					.attr("marker-end", function(d) { return "url(#" + d.type + ")"; });
+
+					var circle = svg.append("g").selectAll("circle")
+					.data(force.nodes())
+					.enter().append("circle")
+					.attr("r", 6)
+					.call(force.drag);
+
+					var text = svg.append("g").selectAll("text")
+					.data(force.nodes())
+					.enter().append("text")
+					.attr("x", 8)
+					.attr("y", ".31em")
+					.text(function(d) { return d.name; });
+
+					// Use elliptical arc path segments to doubly-encode directionality.
+					function tick() {
+						path.attr("d", linkArc);
+						circle.attr("transform", transform);
+						text.attr("transform", transform);
+					}
+
+					function linkArc(d) {
+						var dx = d.target.x - d.source.x,
+						dy = d.target.y - d.source.y,
+						dr = Math.sqrt(dx * dx + dy * dy);
+						return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
+					}
+
+					function transform(d) {
+						return "translate(" + d.x + "," + d.y + ")";
+					}
+
+				}
+
+
+		})
+	</script>
+</head>
+<body>
+	<div class="navbar navbar-default navbar-static-top navbar-fixed-top">
+		<div class="container">
+			<!-- 导航条头部元素 -->
+			<div class="navbar-header">
+				<button class="navbar-toggle" data-toggle="collapse" data-target="#my_menu">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a href="#" class="navbar-brand">新闻言论自动提取</a>
+			</div>
+			
+			<div class="collapse navbar-collapse" id="my_menu">
+
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="">联系我们</a></li>
+					<li><a href="">注册</a></li>
+					<li><a href="">登录</a></li>
+				</ul>
+
+			</div>
+
+		</div>
+	</div>
+
+	<div class="container">
+		<div class="col-lg-6  col-md-6 ">
+		</div>
+		<div class="col-lg-6  col-md-6 ">
+		</div>
+	</div>
+
+	<br>
+	<br>
+	<br>
+
+	<div class="container" >
+		<div class="jumbotron">
+			<div class="row">
+				<div>
+					<textarea  name="input_text" class="my-input"  placeholder="请输入你要处理的内容" rows="10" style="resize: none;overflow: auto; background-color: #eee;"></textarea>
+				</div>
+
+				<div class="container" >
+					<div class="row">
+						<div class="col-lg-6">
+							<div >	
+								<input type="file" name="">
+								<!-- <input type="image" src="images/goods.jpg" name=""> -->
+							</div>
+						</div>
+
+						<div class="col-lg-6">							
+							<div style="text-align:right;">	
+								<!-- <input type="image" src="images/goods.jpg" name=""> -->
+								<input class="my-buttton" type="reset" name="" value="清空">
+								<input class="my-buttton" type="submit" name="" value="提取">
+							</div>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+<!-- 			<div class="row">
+				<div class="col-lg-2 col-lg-offset-10" style="padding-right:0">
+					<a href="#" class="btn btn-danger" style="float: right;">提取言论</a>
+				</div>
+			</div> -->
+		</div>	
+	</div>
+
+
+	<div class="container" >
+		<table class="table">
+			<thead style="display: none;">
+				<tr>
+					<th  style="width:8%">人物</th>
+					<th>言论</th>
+				</tr>
+			</thead>
+			<tbody>			
+			</tbody>
+		</table>
+	</div>
+
+	<div class="container" >
+		<div id='my-graph'>
+		</div>
+	</div>
+</body>
+</html>
+
+

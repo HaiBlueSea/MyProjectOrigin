@@ -1,0 +1,118 @@
+body{
+  padding-top: 70px;
+}
+
+.form-control{
+  border-radius: 5; 
+}
+.navbar-default {
+    background-color: #EEEEEE;
+    border-color: #EEEEEE;
+}
+
+.navbar-inverse{
+  background-color: #EEEEEE;
+  border-color: #EEEEEE;  
+}
+.navbar-inverse .navbar-nav>li>a {
+    color: #fff;
+}
+.navbar-inverse .navbar-collapse,.navbar-inverse .navbar-form{
+  border-color:#fff;
+}
+
+.container .jumbotron, .container-fluid .jumbotron {
+    padding-right: 50px;
+    padding-left: 50px;
+}
+
+.jumbotron:focus{
+  box-shadow: 1 ;
+}
+
+.my-buttton{
+    color: #fff;
+    background-color: #d9534f;
+    border-color: #d43f3a;
+    display: inline-block;
+    padding: 6px 18px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    border: 1px solid transparent;
+    border-top-color: transparent;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+    border-radius: 4px;
+}
+
+
+
+@media screen and (min-width: 768px) {
+  .jumbotron {
+    padding-top: 38px;
+    padding-bottom: 38px;
+  }
+  .container .jumbotron,
+  .container-fluid .jumbotron {
+    padding-left: 50px;
+    padding-right: 50px;
+  }
+  .jumbotron h1,
+  .jumbotron .h1 {
+    font-size: 63px;
+  }
+}
+
+
+
+.my-input{
+    width: 100%;
+    border: 0;
+    box-shadow: none;
+    outline: none;
+}
+
+.my-input:focus {
+    border-color: #eee;
+    outline: 0;
+    -webkit-box-shadow: 0;
+    box-shadow: 0 ;
+}
+
+
+.a-upload {
+    padding: 6px;
+    line-height: 20px;
+    position: relative;
+    /*cursor: pointer;*/
+    color: #888;
+    background: #eee;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+    display: inline-block;
+}
+
+.a-upload  input {
+    position: absolute;
+    font-size: 14px;
+    right: 0;
+    top: 0;
+    opacity: 0;
+    filter: alpha(opacity=0);
+    cursor: pointer
+}
+
+.a-upload:hover {
+    color: #444;
+/*    cursor: pointer;*/
+    background: #eee;
+    border-color: #ddd;
+    text-decoration: none
+}
