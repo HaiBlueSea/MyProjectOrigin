@@ -1,19 +1,48 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta charset="utf-8">
 	<title>新闻言论提取</title>
 	<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
 	<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
 	<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+	<link rel="stylesheet" type="text/css" href="static/css/index.css">
+	<script type="text/javascript">
+		$(function(){
+			// alert("1111");
+			$("input").eq(2).click(function(){
+				var data = $("textarea").val();
+				var req_json = JSON.stringify(data);
+				$.ajax({
+					url:'/solve',
+					type:'post',
+					data: data,
+					contentType: "application/json",
+					dataType:'json',
+				})
+				.done(function(dat){
+					var sSaying = "";
+					for(name in dat){
+						sSaying += "<tr><th scope=\"row\">"+dat[name][0]+":"+"</th><td>";
+						sSaying += dat[name][1];
+						sSaying += "</td></tr>";
+					}
+					$("thead").css("display","table-row-group");
+					$("tbody").html(sSaying);
+				})
 
+			})
 
-	<link rel="stylesheet" type="text/css" href="./css/test.css">
-	<script type="text/javascript" src="./js/test.js"></script>
+			$("input").eq(1).click(function(){
+				$("textarea").val('');
+
+			})
+
+		})
+	</script>
 
 </head>
 <body>
-	<!-- 导航栏 -->
 	<div class="navbar navbar-default navbar-static-top navbar-fixed-top">
 		<div class="container">
 			<!-- 导航条头部元素 -->
@@ -25,15 +54,33 @@
 				</button>
 				<a href="#" class="navbar-brand">新闻言论自动提取</a>
 			</div>
+			
+			<div class="collapse navbar-collapse" id="my_menu">
+
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="">联系我们</a></li>
+					<li><a href="">注册</a></li>
+					<li><a href="">登录</a></li>
+				</ul>
+
+			</div>
+
 		</div>
-	</div><!-- 导航栏 -->
+	</div>
+
+	<div class="container">
+		<div class="col-lg-6  col-md-6 ">
+		</div>
+		<div class="col-lg-6  col-md-6 ">
+		</div>
+	</div>
 
 	<br>
 	<br>
-	
-	<!-- 文本输入栏 -->
+	<br>
+
 	<div class="container" >
-		<div class="jumbotron firstpart">
+		<div class="jumbotron">
 			<div class="row">
 				<div>
 					<textarea  name="input_text" class="my-input"  placeholder="请输入你要处理的内容" rows="10" style="resize: none;overflow: auto; background-color: #eee;"></textarea>
@@ -42,16 +89,22 @@
 				<div class="container" >
 					<div class="row">
 						<div class="col-lg-6">
+							<div >	
+								<input type="file" name="">
+								<!-- <input type="image" src="images/goods.jpg" name=""> -->
+							</div>
 						</div>
 
 						<div class="col-lg-6">							
 							<div style="text-align:right;">	
+								<!-- <input type="image" src="images/goods.jpg" name=""> -->
 								<input class="my-buttton" type="reset" name="" value="清空">
 								<input class="my-buttton" type="submit" name="" value="提取">
 							</div>
 						</div>
 					</div>
-				</div>			
+				</div>
+				
 			</div>
 <!-- 			<div class="row">
 				<div class="col-lg-2 col-lg-offset-10" style="padding-right:0">
@@ -59,47 +112,22 @@
 				</div>
 			</div> -->
 		</div>	
-	</div><!-- 文本输入栏 -->
-	
-	<br>
+	</div>
 
-	<!-- 展示目录栏 -->
-	<div class="container">
-		<span style="font-size:24px;">成果展示</span>
-		<hr style="border-top: 2px solid #eee;margin-top: 0px;">
-	</div><!-- 展示目录栏 -->
-	
-	<!-- 展示栏 -->
+
 	<div class="container" >
-		<div class="row secondpart">
-			<!-- 左侧菜单栏 -->
-			<div class="col-md-2 leftmenu">
-				<ul class="nav nav-pills nav-stacked">
-					<li role="presentation" class="active"><a href="#">言论提取表</a></li>
-					<li role="presentation"><a href="#">言论提取树形图</a></li>
-					<li role="presentation"><a href="#">关键词提取</a></li>
-				</ul>
-			</div><!-- 左侧菜单栏 -->
+		<table class="table">
+			<thead style="display: none;">
+				<tr>
+					<th  style="width:8%">人物</th>
+					<th>言论</th>
+				</tr>
+			</thead>
+			<tbody>
 
-			<!-- 左侧显示栏 -->
-			<div class="col-md-10">
-				<div class="rightmenu">
-					<div class = "showpalce" id='mytree'>
-						<table class="table">
-							<thead> <!-- <thead style="display: none;"> -->
-								<tr>
-									<th  style="width:8%">人物</th>
-									<th>言论</th>
-								</tr>
-							</thead>
-							<tbody>	
+			</tbody>
+		</table>
+	</div>
 
-							</tbody>
-						</table>
-					</div>
-				</div>				
-			</div><!-- 左侧显示栏 -->	
-		</div>
-	</div><!-- 展示栏 -->
 </body>
 </html>
