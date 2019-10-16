@@ -8,5 +8,5 @@
 
   ![效果图](NewExtraction_01/img/home.PNG)
 
-- [项目2-自动摘要](./ProjectAll/APP/AbastractGeneration/Summrize.md)
+- [项目2-自动摘要](./ProjectAll/APP/AbastractGeneration/README.md)
 
