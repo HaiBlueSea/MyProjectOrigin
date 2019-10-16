@@ -39,9 +39,35 @@ $(function(){
 
 	// 			  ]
 	// 			}
+	var oPop = $('#pop_con');
+	var iTime = 100;
+	oPop.css({display:'block'});
+	var timer = setInterval(function(){					
+		iTime--;
+		$('.progress-bar').css('width',100-iTime+'%');
+		if(iTime==0)
+		{
+			oPop.css({display:'none'});
+			clearInterval(timer);
+			iTime=5;
+		}
+	},150);
 
 
-	$("input").eq(1).click(function(){
+	$("input").eq(0).click(function(){
+		$.ajax({
+			url:'/SpeechExtraction/mysql',
+			type:'GET',
+			cache: false,
+			dataType:'json',
+			success:function(result){
+				$("textarea").val(result['content']);
+			}
+		})
+	})
+
+
+	$("input").eq(2).click(function(){
 		var data = $("textarea").val();
 		var req_json = JSON.stringify(data);
 		var temp_dict = {};
@@ -58,10 +84,11 @@ $(function(){
 			for(name in dat){
 				if(typeof(temp_dict[dat[name][0]]) == "undefined"){
 					temp_dict[dat[name][0]]={"name":dat[name][0],"children":[]}};
-				temp_dict[dat[name][0]].children.push({"name":dat[name][1]});
+				temp_dict[dat[name][0]].children.push({"name":dat[name][2]});
 
-				sSaying += "<tr><th scope=\"row\">"+dat[name][0]+":"+"</th><td>";
-				sSaying += dat[name][1];
+				sSaying += "<tr><th scope=\"row\">"+dat[name][0]+"</th><td>";
+				sSaying += dat[name][1] + "</td><td>";
+				sSaying += dat[name][2]
 				sSaying += "</td></tr>";
 			}
 			$(".nav-stacked > li").eq(0).click();
@@ -71,7 +98,7 @@ $(function(){
 		
 	})
 
-	$("input").eq(0).click(function(){
+	$("input").eq(1).click(function(){
 		$("textarea").val('');
 
 	})
@@ -85,8 +112,8 @@ $(function(){
 			$(this).addClass('active');	
 
 			var temp = "";
-			temp = "<table class=\"table\"><thead><tr><th  style=\"width:8%\"> \
-				人物</th><th>言论</th></tr></thead><tbody>"
+			temp = "<table class=\"table\"><thead><tr><th style=\"width:12%\"> \
+				人物</th><th style=\"width:8%\">动作</th><th>言论</th></tr></thead><tbody>"
 			temp = temp + sSaying +"</tbody></table>"
 			$(".showpalce").html(temp);}
 		return false;

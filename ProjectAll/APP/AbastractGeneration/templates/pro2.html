@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>新闻言论提取</title>
+	<title>文章摘要自动生成</title>
 	<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
 
-	<link rel="stylesheet" type="text/css" href="./static/css/pro1.css">
+	<link rel="stylesheet" type="text/css" href="./static/css/pro2.css">
 
 
 </head>
 <body>
 	<div class="pop_con" id="pop_con">
 		<div class="popup">
-			<p id="pop_tip">模型载入中···</p>
-			<div class="progress">
-				<div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0"aria-valuemax="100" style="width: 0%;"></div>
-			</div>
+		<p id="pop_tip">模型载入中···</p>
+		<div class="progress">
+			<div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0"aria-valuemax="100" style="width: 0%;"></div>
+		</div>
 		</div>
 		<div class="mask"></div>
 	</div>
-
+	
 	<!-- 导航栏 -->
 	<div class="navbar navbar-default navbar-static-top navbar-fixed-top">
 		<div class="container">
@@ -29,7 +29,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a href="#" class="navbar-brand">新闻言论自动提取</a>
+				<a href="#" class="navbar-brand">文章摘要自动生成</a>
 			</div>
 		</div>
 	</div><!-- 导航栏 -->
@@ -39,8 +39,16 @@
 	
 	<!-- 文本输入栏 -->
 	<div class="container" >
+		<div class="input-group">
+		  <span class="input-group-addon" id="basic-addon1">Title</span>
+		  <input type="text" class="form-control" placeholder="输入标题可获取更佳摘要效果" aria-describedby="basic-addon1">
+		</div>
+
+		<br>
 		<div class="jumbotron firstpart">
 			<div class="row">
+
+
 				<div>
 					<textarea  name="input_text" class="my-input"  placeholder="请输入你要处理的内容" rows="10" style="resize: none;overflow: auto; background-color: #eee;"></textarea>
 				</div>
@@ -48,9 +56,19 @@
 				<div class="container" >
 					<div class="row">
 						<div class="col-lg-6">
-							<input class="my-buttton" type="reset" name="" value="随机获取文本">
+									<input class="my-buttton" type="reset" name="" value="随机获取文本">
+									<span style="font-size:14px">摘要长度:</span>
+									<select id='len' style="width:60px;height:28px;padding: 0px 14px;font-size: 12px;">
+									  <option>3</option>
+									  <option>4</option>
+									  <option selected = "selected">5</option>
+									  <option>6</option>
+									  <option>7</option>
+									  <option>8</option>
+									  <option>9</option>
+									</select>
 						</div>
-	
+
 						<div class="col-lg-6">							
 							<div style="text-align:right;">	
 								<input class="my-buttton" type="reset" name="" value="清空">
@@ -60,11 +78,6 @@
 					</div>
 				</div>			
 			</div>
-<!-- 			<div class="row">
-				<div class="col-lg-2 col-lg-offset-10" style="padding-right:0">
-					<a href="#" class="btn btn-danger" style="float: right;">提取言论</a>
-				</div>
-			</div> -->
 		</div>	
 	</div><!-- 文本输入栏 -->
 	
@@ -82,8 +95,8 @@
 			<!-- 左侧菜单栏 -->
 			<div class="col-md-2 leftmenu">
 				<ul class="nav nav-pills nav-stacked">
-					<li role="presentation" class="active"><a href="#">言论提取表</a></li>
-					<li role="presentation"><a href="#">言论提取树形图</a></li>
+					<li role="presentation" class="active"><a href="#">摘要生成</a></li>
+					<li role="presentation"><a href="#">主题提取</a></li>
 					<li role="presentation"><a href="#">关键词提取</a></li>
 				</ul>
 			</div><!-- 左侧菜单栏 -->
@@ -92,18 +105,7 @@
 			<div class="col-md-10">
 				<div class="rightmenu">
 					<div class = "showpalce" id='mytree'>
-						<table class="table">
-							<thead> <!-- <thead style="display: none;"> -->
-								<tr>
-									<th style="width: 12%">人物</th>
-									<th style="width: 8%">动作</th>
-									<th>言论</th>
-								</tr>
-							</thead>
-							<tbody>	
 
-							</tbody>
-						</table>
 					</div>
 				</div>				
 			</div><!-- 左侧显示栏 -->	
@@ -115,7 +117,9 @@
 	<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
 	<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-		
-	<script type="text/javascript" src="./static/js/pro1.js"></script>
+	<script src="./static/js/d3.min.js"></script>
+	<script src="./static/js/d3-legend.min.js"></script>
+
+	<script type="text/javascript" src="./static/js/pro2.js"></script>
 </body>
 </html>

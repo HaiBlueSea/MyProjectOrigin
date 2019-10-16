@@ -13,21 +13,16 @@ body{
 }
 
 svg {
- border-radius:3px;
+ border-radius:5px;
+ margin:auto;
+ display:block;
 }    
-.node {
-    cursor: pointer;
-}
 
-.node circle {
-  fill: #fff;
-  stroke: #99ccff;;
-  stroke-width: 3px;
-}
 
-.node text {
-  font: 12px sans-serif;
-}
+/*.node text {
+  font: 15px sans-serif;
+}*/
+
 
 .link {
   fill: none;
@@ -123,7 +118,7 @@ font-weight:normtal;
     margin-left: 0px;
 }
 .showpalce{
-  background-color: #fff;
+  background-color: #eee;
   border-radius: 6px;
   padding: 15px;
   width: 100%;
@@ -192,6 +187,34 @@ font-weight:normtal;
     background: #eee;
     border-color: #ddd;
     text-decoration: none
+}
+
+/*主题提取bar属性设置*/
+.chart0 div{
+  font: 12px sans-serif;
+  background-color: steelblue;
+  text-align: right;
+  padding: 1px;
+  margin: 3px 0px;
+  color: white; 
+}
+
+.chart1 div{
+  font: 12px sans-serif;
+  background-color: steelblue;
+  text-align: right;
+  padding: 1px;
+  margin: 3px 0px;
+  color: white; 
+}
+.chart0 .chart1{
+  width: 100%;
+  border: 1px solid black;
+}
+.col-md-6 p{
+  text-align: center;
+  font-size: x-large;
+  font-style: oblique;
 }
 
 

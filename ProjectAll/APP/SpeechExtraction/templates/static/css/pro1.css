@@ -193,3 +193,38 @@ font-weight:normtal;
     border-color: #ddd;
     text-decoration: none
 }
+
+
+.popup{
+  width:300px;
+  height:44px;
+  border:0px solid #000;
+  background-color:#fff;
+  position:fixed;
+  left:50%;
+  margin-left:-151px;
+  top:50%;
+  margin-top:-21px;
+  z-index:9999;
+  border-radius: 5px;
+}
+.popup p{
+  /*background-color:gold;*/
+  margin:2px;
+  height:20px;
+  text-align: center;
+}
+
+.mask{
+  position:fixed;
+  width:100%;
+  height:100%;
+  background-color:#000;
+  left:0;
+  top:0;
+  opacity:0.5;
+  z-index:9998;
+}
+.pop_con{
+  display:none;
+}

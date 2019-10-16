@@ -9,22 +9,24 @@ import numpy as np
 import jieba
 import os
 import re
-from collections import Counter
+import pickle
+from APP.SpeechExtraction.myconfig import Myconfig
+import gc
+jieba.initialize()
 
 
 class SentenceEmbedding:
     #句子向量化类
-    def __init__(self, sent_list):
-        self.sent_list = sent_list
-        self.word_frequence = self.__get_word_frequence(self.sent_list)
+    def __init__(self):
+        self.word_frequence = self.__get_word_frequence()
 
-    def get_sentences_vec(self, model_wv):
+    def get_sentences_vec(self, model_wv, sent_list):
         # 句子向量化处理
         a = 0.001
         row = model_wv.vector_size
-        col = len(self.sent_list)
+        col = len(sent_list)
         sent_mat = np.zeros((row, col))
-        for i, sent in enumerate(self.sent_list):
+        for i, sent in enumerate(sent_list):
             length = len(sent)
             sent_vec = np.zeros(row)
             for word in sent:
@@ -44,12 +46,12 @@ class SentenceEmbedding:
         sent_mat = sent_mat - u * u.T * sent_mat
         return sent_mat
 
-    def __get_word_frequence(self,words):
+    def __get_word_frequence(self):
         # 这里不做停用次处理，直接在计算句子向量时候，如果找不到该词，直接跳过
-        word_list = []
-        for word in words:
-            word_list += word
-        word_frequence = Counter(word_list)
+        path = Myconfig.get_path('frequency.txt')
+        assert path
+        with open(path, 'rb') as f:
+            word_frequence = pickle.load(f)
         return word_frequence
 
     # 计算余弦相似度
@@ -74,8 +76,8 @@ class SentenceEmbedding:
         return sims
 
     # 获取相似度结果#输入句子中每一句和首句的相似度
-    def get_similarity_result(self, model_wv):
-        sent_mat = self.get_sentences_vec(model_wv)
+    def get_similarity_result(self, model_wv, sent_list):
+        sent_mat = self.get_sentences_vec(model_wv,sent_list)
         sim = self.__calcu_similarity(sent_mat)
         return sim
 
@@ -90,27 +92,31 @@ class Model:
 
     def load_model(self):
         """返回分词，词性标注，命名实体识别，依存解析等实例对象"""
-        LTP_DATA_DIR = 'E:/MYGIT/Project/ltp_data'  # ltp模型目录的路径
+        LTP_DATA_DIR = Myconfig.get_path('ltp_data')
+        LTP_TEMP_DIR = Myconfig.get_path('temp_file')
+        assert LTP_DATA_DIR
+        assert LTP_TEMP_DIR
         cws_model_path = os.path.join(LTP_DATA_DIR, 'cws.model')  # 分词模型路径，模型名称为`cws.model`
+        cut_temp_path = os.path.join(LTP_TEMP_DIR, 'cut_external_dict/cut_external_dict')
         self.segmentor = Segmentor()  # 初始化实例
-        self.segmentor.load_with_lexicon(cws_model_path, './temp_file/cut_external_dict/cut_external_dict')  # 加载模型
+        self.segmentor.load_with_lexicon(cws_model_path, cut_temp_path)  # 加载模型
 
-        LTP_DATA_DIR = 'E:/MYGIT/Project/ltp_data'  # ltp模型目录的路径
+
         pos_model_path = os.path.join(LTP_DATA_DIR, 'pos.model')  # 词性标注模型路径，模型名称为`pos.model`
+        pos_temp_path = os.path.join(LTP_TEMP_DIR, 'pos_external_dict/pos_external_dict')
         self.postagger = Postagger()  # 初始化实例
-        self.postagger.load_with_lexicon(pos_model_path, './temp_file/pos_external_dict/pos_external_dict')  # 加载模型
+        self.postagger.load_with_lexicon(pos_model_path, pos_temp_path)  # 加载模型
 
-        LTP_DATA_DIR = 'E:/MYGIT/Project/ltp_data'  # ltp模型目录的路径
         ner_model_path = os.path.join(LTP_DATA_DIR, 'ner.model')  # 命名实体识别模型路径，模型名称为`pos.model`
         self.recognizer = NamedEntityRecognizer()  # 初始化实例
         self.recognizer.load(ner_model_path)  # 加载模型
 
-        LTP_DATA_DIR = 'E:/MYGIT/Project/ltp_data'  # ltp模型目录的路径
         par_model_path = os.path.join(LTP_DATA_DIR, 'parser.model')  # 依存句法分析模型路径，模型名称为`parser.model`
         self.parser = Parser()  # 初始化实例
         self.parser.load(par_model_path)  # 加载模型
 
-        fname = r"E:/MYGIT/model/wiki_stopwords/wiki_word2vec.kv"
+        fname = Myconfig.get_path('vec.kv') #或取模型目录
+        assert fname
         # model_wv.save(fname)
         self.model_wv = KeyedVectors.load(fname, mmap='r')
 
@@ -120,9 +126,12 @@ class Model:
         self.recognizer.release()
         self.parser.release()
         del(self.model_wv)
-
+        _ = gc.collect()
+        _ = gc.collect()
 
 class SpeechExtraction:
+    def __init__(self):
+        self.Sen_Embedding = SentenceEmbedding()
     def __cut_sentence(self,string):
         """@string contain many sentence"""
         sents = SentenceSplitter.split(string)  # 分句
@@ -135,7 +144,7 @@ class SpeechExtraction:
         for arc in prase:
             if arc.relation == "SBV" and arc.head == say_index + 1:
                 index = prase.index(arc)
-                break
+                # break
                 # 第二种情况
         if index == -1:
             for arc in prase:
@@ -144,30 +153,73 @@ class SpeechExtraction:
         # 两种情况都没找到
         if index == -1: return ''
 
-        Entity = ['S-Nh', 'S-Ni', 'B-Nh', 'B-Ni', 'I-Nh', 'I-Ni', 'E-Nh', 'E-Ni']  # 命名实体标记
-        name = word_list[index]
+        Entity = (
+        'S-Nh', 'S-Ni', 'S-Ns', 'B-Nh', 'B-Ni', 'B-Ns', 'I-Nh', 'I-Ni', 'I-Ns', 'E-Nh', 'E-Ni', 'E-Ns')  # 命名实体标记
+        # Entity = ('S-Nh', 'S-Ni')  # 命名实体标记
+        name = ''
+        cur = index
+        ret_flag = False
+        while cur >= 0:
+            if ner_list[cur] in Entity or cur == index:
+                name = word_list[cur] + name
+                if ner_list[cur] in Entity: ret_flag = True
+                cur -= 1
+            else:
+                break
 
-        if ner_list[index] in Entity: return name
-        if pos_list[index] not in ['n', 'nh']: return ''
+        if ret_flag: return name
+        if pos_list[index] not in ('n', 'nh', 'ws'): return ''
 
         pre = word_list[:index]  # 前半部分
         pos = word_list[index + 1:]  # 后半部分
         while pre:
             w = pre.pop(-1)
             w_index = word_list.index(w)
-
-            if prase[w_index].relation == 'ADV': continue
-            if prase[w_index].relation in ['WP', 'ATT', 'SVB'] and (w not in ['，', '。', '、', '）', '（']):
+            # if prase[w_index].relation == 'ADV': continue
+            if prase[w_index].relation in ('WP', 'ATT', 'SVB') and (w not in ('，', '。', '、', '）', '（')):
                 name = w + name
             else:
                 pre = False
         while pos:
             w = pos.pop(0)
             w_index = word_list.index(w)
-            if prase[w_index].relation in ['WP', 'LAD', 'COO', 'RAD'] and w_index < say_index and (
-                    w not in ['，', '。', '、', '）', '（']):
-                name = name + w  # 向后拼接
-            else:  # 中断拼接直接返回
+            if prase[w_index].head - 1 == index or \
+                    prase[prase[w_index].head - 1].head - 1 == index or \
+                    prase[prase[prase[w_index].head - 1].head - 1].head - 1 == index:
+                if prase[w_index].relation in ('WP', 'LAD', 'COO', 'RAD', 'ATT') and w_index < say_index and (
+                        w not in ('，', '。', '、', '）', '（')):
+                    name = name + w  # 向后拼接
+                else:  # 中断拼接直接返回
+                    pos = False
+            else:
+                pos = False
+        return name
+
+        if pos_list[index] not in ('n', 'nh', 'ws'): return name
+        name = word_list[index]
+
+        pre = word_list[:index]  # 前半部分
+        pos = word_list[index + 1:]  # 后半部分
+        while pre:
+            w = pre.pop(-1)
+            w_index = word_list.index(w)
+            # if prase[w_index].relation == 'ADV': continue
+            if prase[w_index].relation in ('WP', 'ATT', 'SVB') and (w not in ('，', '。', '、', '）', '（')):
+                name = w + name
+            else:
+                pre = False
+        while pos:
+            w = pos.pop(0)
+            w_index = word_list.index(w)
+            if prase[w_index].head - 1 == index or \
+                    prase[prase[w_index].head - 1].head - 1 == index or \
+                    prase[prase[prase[w_index].head - 1].head - 1].head - 1 == index:
+                if prase[w_index].relation in ('WP', 'LAD', 'COO', 'RAD', 'ATT') and w_index < say_index and (
+                        w not in ('，', '。', '、', '）', '（')):
+                    name = name + w  # 向后拼接
+                else:  # 中断拼接直接返回
+                    pos = False
+            else:
                 pos = False
         return name
 
@@ -225,11 +277,14 @@ class SpeechExtraction:
 
             # 找到说的主语
             for say in pro_say_word:
+                if say[0] in (':', '：') and den_parsing_list[say[1]].relation == 'WP':
+                    say = (say[0], den_parsing_list[say[1]].head - 1)
                 name = self.__get_name(word_list, den_parsing_list, ner_list, pos_list, say[1])
                 #print('第{}句子, sayword:{} name:{}'.format(_i, say, name))
                 if name != '':
                     say_underword = []
                     index = self.__get_under_node(say[1], den_parsing_list, 'VOB')
+                    _flag = 999
                     if index != -1:
                         _flag = len(index)
                         say_underword += index
@@ -258,15 +313,14 @@ class SpeechExtraction:
                             words1 = jieba.lcut(saying)
                             _word_list = sentence_list[_i + 1:_i + 4]  # 切片的话_i+4如果超出则取到末尾
                             _word_list.insert(0, words1)
-                            Sen_Embedding = SentenceEmbedding(_word_list)
-                            sim = Sen_Embedding.get_similarity_result(models.model_wv)
+                            sim = self.Sen_Embedding.get_similarity_result(models.model_wv,_word_list)
                             #print(sim)
                             for i_sim, _sim in enumerate(sim):
                                 if _sim > 0.85:
                                     pro_news_dict[_i] += [sentence_list[_i + i_sim + 1]]
                                 else:
                                     break
-                        news_dict[_i] = [name, saying]
+                        news_dict[_i] = [name, say[0], saying]
                         break
 
                         # 对多句添加进行判断，如果下一句里没说，或没提取出来，则拼接到上一句，避免重复
@@ -287,7 +341,9 @@ class My_Extractor:
         self.models.load_model()
         self.extractor = SpeechExtraction()
     def __get_relatedwords(self):
-        path = './/temp_file//saywords'
+        temp_path = Myconfig.get_path('temp_file')
+        assert temp_path
+        path = os.path.join(temp_path, 'saywords')
         relatedwords_list = []
         with open(path, encoding='utf-8') as f:
             line_str = f.readline()
@@ -303,3 +359,4 @@ class My_Extractor:
 
     def release(self):
         self.models.release_all_model()
+        _ = gc.collect()
