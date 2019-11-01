@@ -51,7 +51,7 @@ $(function(){
 			clearInterval(timer);
 			iTime=5;
 		}
-	},150);
+	},180);
 
 
 	$("input").eq(0).click(function(){
@@ -176,7 +176,7 @@ $(function(){
 		  // Normalize for fixed-depth.控制横向深度
 		  nodes.forEach(function(d) { d.y = d.depth * 100; });
 
-		  // Update the nodes鈥�
+		  // Update the nodes鈥 
 		  var node = svg.selectAll("g.node")
 		      .data(nodes, function(d) { return d.id || (d.id = ++i);});
 
@@ -243,7 +243,7 @@ $(function(){
 		  nodeExit.select("text")
 		      .style("fill-opacity", 1e-6);
 
-		  // Update the links鈥�
+		  // Update the links鈥 
 		  var link = svg.selectAll("path.link")
 		      .data(links, function(d) { return d.target.id; });
 

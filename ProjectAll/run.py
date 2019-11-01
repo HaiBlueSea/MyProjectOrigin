@@ -3,13 +3,16 @@
 from flask import Flask, render_template
 from APP.SpeechExtraction.news_blueprint import  app_extraction
 from APP.AbastractGeneration.abstract_blueprint import app_summarization
-
+from APP.CommentsClassification.classification_blueprint import app_classification
+import os
 app = Flask("__main__",static_folder='static',template_folder='templates')
+
+app.root_path = os.path.dirname(__file__)
 
 # 分隔视图方法2：注册蓝图，url_prefix="/goods"定义前缀 这里变成 /goods/get_goods
 app.register_blueprint(app_extraction,url_prefix="/SpeechExtraction")
 app.register_blueprint(app_summarization, url_prefix="/AbastractGeneration")
-
+app.register_blueprint(app_classification, url_prefix="/CommentsClassification")
 
 @app.route("/", methods=["GET"])
 def index():

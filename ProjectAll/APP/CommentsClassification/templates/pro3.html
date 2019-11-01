@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>情感细粒度分类</title>
+	<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+
+	<link rel="stylesheet" type="text/css" href="./static/css/pro3.css">
+	<script type="text/javascript" src="./static/js/pro3.js"></script>
+
+</head>
+<body>
+	<!-- 导航栏 -->
+	<div class="navbar navbar-default navbar-static-top navbar-fixed-top">
+		<div class="container">
+			<!-- 导航条头部元素 -->
+			<div class="navbar-header">
+				<button class="navbar-toggle" data-toggle="collapse" data-target="#my_menu">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a href="#" class="navbar-brand">情感细粒度分类</a>
+			</div>
+		</div>
+	</div><!-- 导航栏 -->
+
+	<br>
+	<br>
+	<!-- 文本输入栏 -->
+	<div class="container" >
+		<div class="jumbotron firstpart">
+			<div class="row">
+				<div>
+					<textarea  name="input_text" class="my-input"  placeholder="请先点击获取评论" rows="10" style="resize: none;overflow: auto; background-color: #eee;"></textarea>
+				</div>
+
+				<div class="container">
+					<div class="row">
+						<div class="col-lg-6">
+							<input class="my-buttton" type="reset" name="" value="获取评论">
+						</div>
+	
+						<div class="col-lg-6">							
+						</div>
+					</div>
+				</div>			
+			</div>
+<!-- 			<div class="row">
+				<div class="col-lg-2 col-lg-offset-10" style="padding-right:0">
+					<a href="#" class="btn btn-danger" style="float: right;">提取言论</a>
+				</div>
+			</div> -->
+		</div>	
+	</div><!-- 文本输入栏 -->
+	
+	<br>
+
+	<!-- 展示目录栏 -->
+	<div class="container">
+		<span style="font-size:24px;">成果展示</span>
+		<hr style="border-top: 2px solid #eee;margin-top: 0px;">
+	</div><!-- 展示目录栏 -->
+	
+	<!-- 展示栏 -->
+	<div class="container" >
+		<div class="row secondpart">
+			<!-- 左侧菜单栏 -->
+			<div class="col-md-2 leftmenu">
+				<ul class="nav nav-pills nav-stacked">
+					<li role="presentation" class="active"><a href="#">分类结果</a></li>
+					<li role="presentation"><a href="#">模型介绍</a></li>
+					<li role="presentation"><a href="#">模型评估</a></li>
+				</ul>
+			</div><!-- 左侧菜单栏 -->
+
+			<!-- 左侧显示栏 -->
+			<div class="col-md-10">
+				<div class="rightmenu">
+					<div class = "showpalce">
+
+					</div>
+				</div>				
+			</div><!-- 左侧显示栏 -->	
+		</div>
+	</div><!-- 展示栏 -->
+</body>
+</html>
